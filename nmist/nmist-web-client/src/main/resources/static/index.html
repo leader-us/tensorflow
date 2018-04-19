@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Upload</title>
+ <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery.js"   type="text/javascript" ></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js" type="text/javascript"></script>
+      
+</head>
+<body>
+<image id="logo" src="logo.png"/>
+<form id="myform" role="form" action="/uploadfile" method="POST" enctype="multipart/form-data" >
+  <div class="form-group">
+    <p class="help-block">手写数字可以用画图工具画出，需要为正方形的图片，黑色文字，白色背景，一个图片只包括一个数字，数字居中，类似下面的</p>
+    <image id="logo2" src="example55.bmp"/><BR>
+     <label for="severinf">Tensorflow Serving Server</label><BR>
+    <input  id="severinf" type="text"   name="severinf" value="tf-serving-nminst:8500"></input><BR>
+    <label for="modelname">NMIST Saved Model</label><BR>
+    <input  id="modelname" type="text"   name="modelname" value="mnist"></input><BR>
+    <label for="inputfile">请上传你的手写数字图片</label><BR>
+    <input type="file" id="inputfile" name="file"><br>
+     <button id="subbt" type="button" class="btn btn-default">上传</button>
+    <label  id="result" ></label>
+  </div>
+ </form>
+<script type="text/javascript">
+        $(document).ready(function(){
+            $("#subbt").click(function(){
+                var formData = new FormData($( "#myform" )[0]);
+                 $.ajax({    
+                    type:'post',        
+                    url:'/uploadfile',  
+                    data: formData,
+                    contentType: false,
+                    processData: false,   
+                    cache:false, 
+                    success: function (data) {
+                    $("#logo2").attr("src", '/showpic/'+data.picURL);
+                    if(data.success)
+                    {
+                    
+                     $("#result").text("识别结果:"+ data.classId)
+                    }else
+                    {
+                     $("#result").text("识别错误，发生异常"+ data.hint)
+                    }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) { 
+                        alert("失败！"+textStatus);
+                        
+                    }   
+                });    
+            });
+        });
+    </script>
+</body>
+</html>
